@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>inicio</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <script>
+        const nombreCompleto = sessionStorage.getItem('profesorNombre');
+        if (!nombreCompleto) {
+            window.location.href = '/'
+        }
+    </script>
+
+    <style>
+        .body-principal {
+            background-image: url('/assets/fondoPrincipal.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .selected-avatar {
+            border: 3px solid #007bff;
+            /* Borde azul para el avatar seleccionado */
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+            /* Sombra */
+            border-radius: 10px;
+        }
+
+        /* Otros elementos, como formularios */
+        .form-control {
+            border-color: var(--color-rosa);
+        }
+
+        .form-control:focus {
+            border-color: var(--color-morado);
+            box-shadow: 0 0 0 0.2rem rgba(199, 0, 255, 0.25);
+        }
+
+        .card-imprimir-reporte {
+            background-color: rgb(56, 182, 255);
+            /* Color de la paleta */
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card-imprimir-reporte:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(56, 182, 255, 0.6);
+            cursor: pointer;
+        }
+
+        .card-listado-alumnos {
+            background-color: rgb(149, 253, 17);
+            /* Color de la paleta */
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card-listado-alumnos:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(149, 253, 17, 0.6);
+            cursor: pointer;
+        }
+
+        .card-cargar-archivo {
+            background-color: rgb(255, 167, 16);
+            /* Color de la paleta */
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card-cargar-archivo:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgb(204, 134, 12);
+            cursor: pointer;
+        }
+
+        /* Estilos comunes para las cards */
+        .card {
+            border-radius: 15px;
+            color: white;
+            font-weight: 700;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .icono {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+
+        .navbar {
+            height: 100px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            background-color: var(--color-morado) !important;
+        }
+
+        #nombreMaestro {
+            margin-right: 20px;
+        }
+
+
+        .navbar .btn-danger {
+            margin-left: 40px;
+            background-color: rgb(255, 0, 0) !important;
+        }
+
+        .upload-zone {
+            border-radius: 10px;
+            background-color: rgba(245, 245, 245, 0.7);
+            transition: background-color 0.3s;
+        }
+
+        .upload-zone:hover {
+            background-color: rgba(220, 220, 220, 0.9);
+            cursor: pointer;
+        }
+      
+    </style>
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+
+<body class="body-principal">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">DisgraKids</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item d-flex align-items-center">
+                        <h3 id="nombreMaestro" class="nav-link"></h3>
+                    </li>
+                    <li class="nav-item">
+                        <img id="avatarMaestro" src="" alt="Avatar" class="rounded-circle" width="50" height="50">
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-danger" onclick="logout()">Cerrar Sesión</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <!-- Contenido Principal - Cards en forma vertical -->
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <!-- Card Imprimir Reporte -->
+            <div class="col-md-8 mb-4">
+                <div class="card card-imprimir-reporte">
+                    <i class=" icono fas fa-print"></i> <!-- Icono de imprimir -->
+                    <h3>Imprimir Reporte</h3>
+                    <p>Generar e imprimir reportes</p>
+                </div>
+            </div>
+            <!-- Card Listado de Alumnos -->
+            <div class="col-md-8 mb-4">
+                <div class="card card-listado-alumnos">
+                    <i class="icono fas fa-users"></i> <!-- Icono de alumnos -->
+                    <h3>Listado de Alumnos</h3>
+                    <p>Ver el listado completo de alumnos</p>
+                </div>
+            </div>
+            <!-- Card Cargar Archivo -->
+            <div class="col-md-8 mb-4">
+                <div class="card card-cargar-archivo">
+                    <i class="icono fas fa-upload"></i> <!-- Icono de cargar -->
+                    <h3>Cargar Archivo</h3>
+                    <p>Subir archivo para cargar alumnos</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para seleccionar Avatar -->
+    <div class="modal fade" id="avatarModal" tabindex="-1" aria-labelledby="avatarModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="avatarModalLabel">Selecciona un Avatar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row" id="avatarsContainer">
+                        <!-- Aquí se mostrarán los avatares -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="guardarAvatarBtn" disabled>Guardar Avatar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para cargar archivo -->
+    <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadModalLabel">Cargar Archivo de Excel</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="upload-zone border border-primary p-4 text-center" style="cursor: pointer;">
+                        <p class="mb-3" id="uploadText">Arrastra y suelta el archivo de Excel con el listado de alumnos
+                            o da clic acá</p>
+                        <input type="file" id="fileInput" accept=".xlsx, .xls" style="display: none;">
+                    </div>
+                    <button id="processButton" class="btn btn-primary mt-3" disabled>Procesar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal para mostrar el resultado -->
+    <div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resultModalLabel">Resultado del Procesamiento</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="resultMessage"></div>
+                    <ul id="failedList" class="list-group mt-3" style="display: none;"></ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Scripts de Bootstrap y lógica de la aplicación -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+
+
+
+    <script>
+        // Obtener datos de la sesión
+
+        const avatarUrl = sessionStorage.getItem('profesorAvatar');
+        // Seleccionar la zona de carga y el input
+        // Seleccionar la zona de carga y el input
+        const uploadZone = document.querySelector('.upload-zone');
+        const fileInput = document.getElementById('fileInput');
+        const uploadText = document.getElementById('uploadText');
+        const processButton = document.getElementById('processButton');
+        let alumnosData = [];
+
+
+
+        if (!avatarUrl || avatarUrl === '') {
+            // Si no tiene avatar, mostrar el modal
+            $('#avatarModal').modal('show');
+            cargarAvatares();
+        }
+
+        // Mostrar el nombre y el avatar en el navbar
+        if (nombreCompleto) {
+            const primerNombre = nombreCompleto.split(' ')[0]; // Solo toma el primer nombre
+            document.getElementById('nombreMaestro').textContent = primerNombre;
+
+        }
+
+        if (avatarUrl) {
+            document.getElementById('avatarMaestro').src = avatarUrl;
+        }
+
+        async function logout() {
+            // Llamar a la API para destruir la sesión
+            try {
+                const response = await fetch('/api/auth/logout', {
+                    method: 'POST', // Asegúrate de que sea POST si el backend lo requiere
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    // Limpiar sesión del frontend y redirigir al login
+                    sessionStorage.clear();
+                    window.location.href = '/';
+                } else {
+                    console.error('Error al cerrar sesión');
+                }
+            } catch (error) {
+                console.error('Error de red en el cierre de sesión', error);
+            }
+        }
+
+        //CARGA DE ARCHIVO XLSX
+        // Limpiar el formulario al cerrar el modal
+        $('#uploadModal').on('hidden.bs.modal', function () {
+            fileInput.value = ''; // Limpiar input de archivo
+            uploadText.textContent = 'Arrastra y suelta el archivo de Excel con el listado de alumnos o da clic acá';
+            uploadZone.classList.remove('bg-danger', 'bg-success', 'text-white');
+            processButton.disabled = true;
+            alumnosData = [];
+        });
+
+
+        // Hacer clic en la zona para abrir el selector de archivos
+        uploadZone.addEventListener('click', function () {
+            fileInput.click();
+        });
+
+        // Manejar la carga de archivos mediante el input
+        fileInput.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                procesarArchivo(file);
+            }
+        });
+
+        // Manejar el evento de arrastrar y soltar
+        uploadZone.addEventListener('dragover', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            uploadZone.classList.add('bg-light');
+        });
+
+        uploadZone.addEventListener('dragleave', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            uploadZone.classList.remove('bg-light');
+        });
+
+        uploadZone.addEventListener('drop', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            uploadZone.classList.remove('bg-light');
+
+            // Validar que solo se suba un archivo a la vez
+            if (event.dataTransfer.files.length > 1) {
+                mostrarError('Por favor, solo arrastra un archivo a la vez.');
+                return;
+            }
+
+            const file = event.dataTransfer.files[0];
+            if (file && (file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || file.type === "application/vnd.ms-excel")) {
+                procesarArchivo(file);
+            } else {
+                mostrarError('Por favor, sube un archivo de Excel válido.');
+            }
+        });
+
+        // Función para procesar el archivo de Excel y validar la estructura
+        function procesarArchivo(file) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                const data = new Uint8Array(event.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                if (jsonData.length > 0) {
+                    const headers = jsonData[0];
+                    if (headers[0] === 'NombreAlumno' && headers[1] === 'Codigo') {
+                        mostrarArchivoCargado(file);
+                        processButton.disabled = false;
+
+                        alumnosData = [];
+                        for (let i = 1; i < jsonData.length; i++) {
+                            const fila = jsonData[i];
+                            const nombreAlumno = fila[0];
+                            const codigo = fila[1];
+
+                            if (nombreAlumno && codigo) {
+                                alumnosData.push({ nombreCompleto: nombreAlumno, codigo: codigo });
+                            }
+                        }
+                    } else {
+                        mostrarError('El archivo no contiene la estructura esperada. El primer encabezado debe ser "NombreAlumno" y el segundo "Codigo".');
+                    }
+                } else {
+                    mostrarError('El archivo está vacío o no contiene datos válidos.');
+                }
+            };
+
+            reader.onerror = function () {
+                mostrarError('Hubo un problema al leer el archivo. Por favor, intenta nuevamente.');
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        // Función para mostrar que el archivo se ha cargado correctamente
+        function mostrarArchivoCargado(file) {
+
+            uploadText.textContent = `Archivo cargado: ${file.name}`;
+            uploadZone.classList.remove('bg-danger', 'text-white');
+            uploadZone.classList.add('bg-success', 'text-white');
+        }
+        // Función para mostrar errores en la zona de arrastre
+        function mostrarError(mensaje) {
+            uploadText.textContent = mensaje;
+            uploadZone.classList.remove('bg-success');
+            uploadZone.classList.add('bg-danger', 'text-white');
+            processButton.disabled = true; // Deshabilitar el botón de procesar si hay un error
+        }
+
+         // Enviar los datos a la API al hacer clic en el botón "Procesar"
+    processButton.addEventListener('click', async function () {
+        const failedAlumnos = [];
+
+        try {
+            for (const alumno of alumnosData) {
+                const response = await fetch('/api/alumnos', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(alumno)
+                });
+
+                if (!response.ok) {
+                    const result = await response.json();
+                    if (result.message === 'El código del alumno ya existe') {
+                        failedAlumnos.push(`${alumno.codigo}-${alumno.nombreCompleto}`);
+                    } else {
+                        console.error(`Error al enviar el alumno ${alumno.nombreCompleto}: ${result.message}`);
+                    }
+                }
+            }
+
+            mostrarResultado(failedAlumnos);
+        } catch (error) {
+            console.error('Error al procesar los datos:', error);
+        }
+    });
+    function mostrarResultado(failedAlumnos) {
+        const resultMessage = document.getElementById('resultMessage');
+        const failedList = document.getElementById('failedList');
+        console.log(failedAlumnos)
+
+        if (failedAlumnos.length === 0) {
+            resultMessage.textContent = 'Todos los alumnos fueron creados exitosamente.';
+            failedList.style.display = 'none';
+        } else {
+            resultMessage.textContent = 'Algunos alumnos no se pudieron crear porque ya existen:';
+            failedList.innerHTML = ''; // Limpiar la lista
+            failedAlumnos.forEach(alumno => {
+                const listItem = document.createElement('li');
+                listItem.classList.add('list-group-item', 'list-group-item-danger');
+                listItem.textContent = alumno;
+                failedList.appendChild(listItem);
+            });
+            failedList.style.display = 'block';
+        }
+
+        $('#resultModal').modal('show');
+    }
+
+        // Cargar avatares desde la carpeta avatars/profesores
+        // Cargar avatares desde la carpeta avatars/profesores
+        async function cargarAvatares() {
+            try {
+                // Supongamos que cargamos los avatares manualmente, puedes adaptar este array si los avatares provienen del backend.
+                const avatars = [
+                    '13.png', '14.png', '15.png', '16.png', '17.png' // Los nombres de los avatares
+                ];
+
+                const avatarsContainer = document.getElementById('avatarsContainer');
+                avatarsContainer.innerHTML = ''; // Limpiar el contenedor antes de agregar
+
+                avatars.forEach(avatar => {
+                    const avatarElement = document.createElement('div');
+                    avatarElement.classList.add('col-4', 'mb-3');
+                    avatarElement.innerHTML = `
+                <img src="/avatars/profesores/${avatar}" alt="Avatar" class="img-thumbnail avatar-select" data-avatar="${avatar}" style="cursor: pointer;">
+            `;
+                    avatarsContainer.appendChild(avatarElement);
+                });
+
+                // Evento de selección de avatar
+                document.querySelectorAll('.avatar-select').forEach(img => {
+                    img.addEventListener('click', function () {
+                        // Remover la clase 'selected-avatar' de todos los avatares
+                        document.querySelectorAll('.avatar-select').forEach(img => img.classList.remove('selected-avatar'));
+
+                        // Agregar la clase 'selected-avatar' al avatar que fue clickeado
+                        this.classList.add('selected-avatar');
+
+                        // Habilitar el botón de guardar
+                        document.getElementById('guardarAvatarBtn').disabled = false;
+                    });
+                });
+            } catch (error) {
+                console.error('Error al cargar avatares:', error);
+            }
+        }
+        // Seleccionar la tarjeta de "Cargar Archivo" y abrir el modal al hacer clic
+        document.querySelector('.card-cargar-archivo').addEventListener('click', function () {
+            $('#uploadModal').modal('show');
+        });
+        document.querySelector('.card-listado-alumnos').addEventListener('click', function () {
+            window.location.href="/misAlumnos"
+        });
+
+        // Guardar el avatar seleccionado
+        document.getElementById('guardarAvatarBtn').addEventListener('click', async function () {
+            const avatarSeleccionado = document.querySelector('.selected-avatar').getAttribute('data-avatar');
+
+            try {
+                const response = await fetch(`/api/profesores/profile`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ avatar: `/avatars/profesores/${avatarSeleccionado}` }) // Solo actualiza el avatar
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+
+                    // Actualizar el avatar en la sesión
+                    sessionStorage.setItem('profesorAvatar', result.profesor.avatar);
+
+                    // Cerrar el modal y mostrar una notificación
+                    $('#avatarModal').modal('hide');
+                    alert('Avatar actualizado con éxito');
+                    location.reload();
+                } else {
+                    alert('Error al actualizar el avatar');
+                }
+            } catch (error) {
+                console.error('Error al actualizar el avatar:', error);
+                alert('Hubo un problema al actualizar el avatar.');
+            }
+        });
+
+        document.querySelector('.card-imprimir-reporte').addEventListener('click', async function () {
+    try {
+        // Llamar a la API para obtener el reporte
+        const response = await fetch('/api/reporte');
+        const data = await response.json();
+
+        if (response.ok) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Cargar las imágenes
+            const topImage = await loadImage('/assets/top.png');
+            const footerImage = await loadImage('/assets/footer.png');
+            const mainImage = await loadImage('/assets/main.png');
+
+            // Obtener el ancho y alto del PDF
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+
+            // Configurar opacidad para las imágenes
+            doc.setGState(new doc.GState({ opacity: 0.3 }));
+
+            // Añadir la imagen de la parte superior como fondo
+            const topImageHeight = 20;
+            doc.addImage(topImage, 'PNG', 0, 0, pageWidth, topImageHeight, '', 'FAST');
+
+            // Añadir la imagen de la parte inferior como fondo
+            const footerImageHeight = 20;
+            const footerY = pageHeight - footerImageHeight;
+            doc.addImage(footerImage, 'PNG', 0, footerY, pageWidth, footerImageHeight, '', 'FAST');
+
+            // Añadir la imagen 'main.png' en la posición original
+            const mainWidth = 100;
+            const mainHeight = 80;
+            const mainX = (pageWidth - mainWidth); // Posición original
+            const mainY = pageHeight - mainHeight - 10;
+            doc.addImage(mainImage, 'PNG', mainX, mainY, mainWidth, mainHeight, '', 'FAST');
+
+            // Restablecer la opacidad para el texto y otros elementos
+            doc.setGState(new doc.GState({ opacity: 1 }));
+
+            // Título centrado y en negrita
+            doc.setFontSize(24);
+            doc.setFont("helvetica", "bold");
+            const title = 'Reporte de Resultados';
+            const titleX = (pageWidth - doc.getTextWidth(title)) / 2; // Centrar el título
+            doc.text(title, titleX, topImageHeight + 20);
+
+            // Obtener el avatar del profesor desde el sessionStorage
+            const profesorAvatar = sessionStorage.getItem('profesorAvatar');
+            const profesorY = topImageHeight + 45; // Ajustar posición para el avatar y el nombre
+
+            // Si hay avatar, se coloca más arriba del nombre del profesor
+            if (profesorAvatar) {
+                const avatarImage = await loadImage(profesorAvatar);
+                doc.addImage(avatarImage, 'PNG', 14, profesorY - 30, 20, 20, '', 'FAST'); // Subir un poco más el avatar
+            }
+
+            // Nombre del profesor justo debajo del avatar
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Profesor: ${data.profesor}`, 14, profesorY);
+
+            // Calcular los promedios y formatear los datos para la tabla
+            const rows = data.reporte.map((alumno) => {
+                const promedio = ((alumno.visual + alumno.orden + alumno.trazo + alumno.auditivo) / 4).toFixed(2);
+                return [
+                    alumno.nombreCompleto,
+                    alumno.codigo,
+                    alumno.visual,
+                    alumno.orden,
+                    alumno.trazo,
+                    alumno.auditivo,
+                    promedio
+                ];
+            });
+
+            // Agregar la tabla al PDF usando autoTable
+            doc.autoTable({
+                head: [['Nombre Completo', 'Código', 'Visual', 'Orden', 'Trazo', 'Auditivo', 'Promedio']],
+                body: rows,
+                startY: profesorY + 15, // Espacio debajo del nombre del profesor
+                styles: { halign: 'center' },
+                headStyles: { fillColor: [56, 182, 255] }, // Color que especificaste
+                columnStyles: {
+                    0: { halign: 'left' },
+                    1: { halign: 'center' },
+                    2: { halign: 'center' },
+                    3: { halign: 'center' },
+                    4: { halign: 'center' },
+                    5: { halign: 'center' }
+                }
+            });
+
+            // Guardar el PDF
+            doc.save('reporte_resultados.pdf');
+        } else {
+            console.error('Error al obtener el reporte:', data.message);
+            alert('Error al obtener el reporte. Por favor, intenta de nuevo.');
+        }
+    } catch (error) {
+        console.error('Error al generar el PDF:', error);
+        alert('Hubo un problema al generar el PDF. Intenta nuevamente.');
+    }
+});
+// Función para cargar imágenes
+async function loadImage(url) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = url;
+        img.onload = () => resolve(img);
+        img.onerror = (err) => reject(err);
+    });
+}
+
+    </script>
+</body>
+
+</html>

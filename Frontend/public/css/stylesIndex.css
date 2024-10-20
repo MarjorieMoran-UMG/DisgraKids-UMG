@@ -1,0 +1,353 @@
+:root {
+  --color-azul: rgb(56, 182, 255);
+  --color-verde: rgb(149, 253, 17);
+  --color-rosa: rgb(237, 26, 119);
+  --color-morado: rgb(199, 0, 255);
+  --color-naranja: rgb(255, 167, 16);
+  --color-amarillo: rgb(253, 215, 0);
+}
+/* Estilos del fondo */
+body {
+  background-image: url("/assets/fondoAzul.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  text-align: center;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  transition: background-image 1s ease-in-out;
+}
+
+/* Contenedor de imágenes */
+.image-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+}
+
+/* Efecto de deslizamiento al hacer clic */
+.image-container.slide-out {
+  animation: slideOut 1s forwards;
+}
+
+/* Contenedor de nubes detrás de los elementos */
+.cloud-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 300px;
+  pointer-events: none; /* Las nubes no interfieren con la interacción */
+  z-index: -1; /* Asegúrate de que las nubes estén detrás de los demás elementos */
+  transition: opacity 1s ease-in-out; /* Transición para el desvanecimiento */
+}
+
+/* Añadimos una clase para ocultar las nubes con animación */
+.cloud-container.fade-out {
+  opacity: 0; /* Desvanecer las nubes */
+}
+
+/* Estilos comunes para todas las nubes */
+.cloud {
+  position: absolute;
+  background-image: url("/assets/Nube.png"); /* Ruta de la imagen de la nube */
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0.8;
+}
+
+/* Nube 1 */
+.cloud-1 {
+  width: 15vw;
+  height: 8vw;
+  top: 5vh;
+  animation: moveClouds 25s linear infinite;
+}
+
+/* Nube 2 */
+.cloud-2 {
+  width: 20vw;
+  height: 10vw;
+  top: 10vh;
+  animation: moveClouds 35s linear infinite;
+}
+
+/* Nube 3 */
+.cloud-3 {
+  width: 10vw;
+  height: 5vw;
+  top: 15vh;
+  animation: moveClouds 20s linear infinite;
+}
+
+/* Nube 4 */
+.cloud-4 {
+  width: 18vw;
+  height: 9vw;
+  top: 20vh;
+  animation: moveClouds 30s linear infinite;
+}
+
+/* Nuevas nubes */
+.cloud-5 {
+  width: 14vw;
+  height: 7vw;
+  top: 25vh;
+  animation: moveClouds 28s linear infinite;
+}
+
+.cloud-6 {
+  width: 16vw;
+  height: 8vw;
+  top: 30vh;
+  animation: moveClouds 32s linear infinite;
+}
+
+.cloud-7 {
+  width: 22vw;
+  height: 11vw;
+  top: 35vh;
+  animation: moveClouds 38s linear infinite;
+}
+
+/* Animación de movimiento de las nubes */
+@keyframes moveClouds {
+  0% {
+    left: -100px; /* Comienza fuera de la pantalla a la izquierda */
+  }
+  100% {
+    left: 100vw; /* Termina fuera de la pantalla a la derecha */
+  }
+}
+
+@keyframes slideOut {
+  to {
+    transform: translateX(-100vw);
+    opacity: 0;
+  }
+}
+
+/* Estilos para las imágenes */
+.image-container img {
+  position: absolute;
+  width: 30vw; /* Aumenta el tamaño de los niños */
+  opacity: 0;
+  animation: fadeIn 2s forwards;
+}
+
+/* Posición de los niños */
+.image-container .child-left {
+  left: 5vw;
+  bottom: 5vh;
+  opacity: 1;
+  animation: slideInLeft 1.5s forwards, dance 3s infinite 1.5s ease-in-out;
+}
+
+.image-container .child-right {
+  right: 5vw;
+  bottom: 5vh;
+  opacity: 1;
+  animation: slideInRight 1.5s forwards, dance 3s infinite 1.5s ease-in-out;
+}
+
+/* Posición y tamaño reducido de la jirafa */
+.image-container .giraffe {
+  left: 50%;
+  bottom: 12vw;/* Ajusta la posición para que esté justo encima del container */
+  transform: translateX(-50%);
+  width: 25vw; /* Tamaño más pequeño para la jirafa */
+  z-index: 1;
+  animation: fadeIn 2s forwards;
+}
+
+/* Contenedor inicial sin fondo */
+.container-inicial {
+  position: relative;
+  max-width: 40vw;
+  padding: 0;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+/* Estilos para el título con fondo verde */
+h1 {
+  font-size: 4vw;
+  color: white;
+  background-color: #34b44a; /* Fondo verde */
+  padding: 1vw;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+/* Estilo para el texto */
+p {
+  font-size: 2vw;
+  margin-top: 20px;
+}
+
+/* Estilo para el botón */
+.btn-ingresar,
+.btn-seleccion {
+  padding: 1vw 2vw;
+  font-size: 1.5vw;
+  background-color: #34b44a;
+  border: none;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.btn-ingresar:hover,
+.btn-seleccion:hover {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-seleccion-maestro {
+  padding: 1vw 2vw;
+  font-size: 1.5vw;
+  background-color: #fb1c2f;
+  border: none;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.btn-seleccion-maestro:hover {
+  background-color: #8e0511;
+  color: white;
+}
+
+/* Nueva vista después del clic */
+.codigo-container {
+  text-align: center;
+  display: none; /* Se muestra después del clic */
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Ocupa toda la pantalla */
+  width: 100vw;
+}
+
+/* Card más grande y centrada */
+.codigo-container .card {
+  background-color: rgba(255, 255, 255, 0.6); /* Fondo blanco con opacidad */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra de la card */
+  border-radius: 10px;
+  padding: 50px;
+  width: 100vw; /* Más grande */
+  max-width: 600px; /* Limita el tamaño máximo */
+  text-align: center;
+}
+.botonera-container button {
+  width: 45%; /* Hace los botones más grandes, ocupando el 45% del ancho cada uno */
+  padding: 1.5rem 2rem; /* Botones más altos */
+  font-size: 1.75rem; /* Tamaño de fuente más grande */
+  margin: 0 10px; /* Añade un margen entre los botones */
+}
+
+/* Estilos para el texto */
+h2 {
+  font-size: 5rem; /* 5 veces más grande */
+  color: #28a745; /* Azul de tu paleta */
+}
+
+/* Estilo para el input */
+.codigo-container input {
+  width: 100%;
+  padding: 30px; /* Más grande */
+  font-size: 3rem; /* 5 veces más grande */
+  border: 2px solid rgb(149, 253, 17); /* Verde de tu paleta */
+  border-radius: 10px;
+  outline: none;
+  text-align: center;
+  color: rgb(56, 182, 255); /* Color del texto */
+  font-weight: bold; /* Texto en negrita */
+}
+.botonera-container {
+  justify-content: center;
+  align-items: center;
+  height: 40vh; /* Ocupa toda la altura de la pantalla */
+  background: rgba(255, 255, 255, 0.5); /* Fondo transparente */
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.btn-volver {
+  position: absolute;
+  top: 10px; /* Ajusta según la separación que desees del borde superior */
+  left: 10px; /* Ajusta según la separación que desees del borde izquierdo */
+  z-index: 1000; /* Asegura que el botón esté por encima de otros elementos si es necesario */
+  padding-left: 15px !important; /* Para dar un poco de espacio al ícono */
+  padding: 0.5vw 2vw;
+  font-size: 1.2vw;
+  background-color: var(--color-morado);
+  border: none;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+ 
+}
+.btn-volver :hover {
+    background-color: var(--color-rosa);
+    color: white;
+  }
+  .btn-volver i {
+    margin-right: 8px; /* Añade separación entre el ícono y el texto */
+}
+
+/* Quitar las flechas de input tipo number */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+/* Animaciones de aparición */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-500px);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(500px);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes dance {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}

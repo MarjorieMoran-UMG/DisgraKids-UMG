@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio de Trazado de Letras y Números</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script>
+        const idAlumno = sessionStorage.getItem('idAlumno');
+        if (!idAlumno) {
+            window.location.href = '/'
+        }
+    </script>
+    <style>
+        :root {
+            --azul: rgb(56, 182, 255);
+            --verde: rgb(149, 253, 17);
+            --rosado: rgb(237, 26, 119);
+            --morado: rgb(199, 0, 255);
+            --naranja: rgb(255, 167, 16);
+            --amarillo: rgb(253, 215, 0);
+            --rojo: rgb(255, 0, 0);
+        }
+
+        body {
+            background-image: url('/assets/FondoModuloTrazado.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        canvas {
+            cursor: crosshair;
+            margin: 20px auto;
+            display: block;
+            background-color: var(--azul);
+            border-radius: 10px;
+        }
+
+        #coordinates {
+            font-size: 16px;
+            margin-top: 10px;
+            color: var(--morado);
+        }
+
+        .card {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+
+        .btn-danger {
+            background-color: var(--rojo);
+            border-color: var(--rojo);
+
+        }
+
+        .btn-dark {
+            background-color: var(--verde);
+            border-color: var(--verde);
+
+        }
+
+        .btn-dark:hover {
+            background-color: rgb(100, 160, 22);
+            border-color: var(--verde);
+        }
+
+        .btn-custom {
+            font-size: 32px !important;
+            width: 150px;
+        }
+
+
+        /* Modal adjustments */
+        .modal-dialog {
+            max-width: 900px;
+            margin: 2rem auto;
+        }
+
+        .modal-body {
+            font-size: 1.5rem;
+        }
+
+        #stars img {
+            width: 120px;
+            margin: 0 15px;
+        }
+
+        .btn-volver {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            padding-left: 15px !important;
+            padding: 0.5vw 2vw;
+            font-size: 1.2vw;
+            background-color: var(--morado);
+            border: none;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+
+        }
+
+        .btn-volver :hover {
+            background-color: var(--rosado) !important;
+            color: white;
+        }
+
+        .btn-volver i {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <button class="btn btn-volver btn-lg" id="btn-volver">
+        <i class="fas fa-arrow-left"></i> Menú
+    </button>
+    <div class="container">
+        <div class="card">
+            <h1 class="text-center" style="color: var(--morado);">¡Traza las letras y números con imágenes!</h1>
+            <p class="text-center" style="color: var(--naranja);">Traza la imagen y luego presiona "Calificar".</p>
+            <div class="text-center">
+                <h4 id="levelCounter">Nivel: 1/12</h4>
+            </div>
+            <div class="text-center col">
+                <!-- Colocar canvas y botones en una fila -->
+                <div class="d-flex justify-content-center align-items-center mx-auto" style="max-width: 900px;">
+                    <!-- Canvas para trazar -->
+                    <canvas id="drawArea" width="500" height="500" class="border border-dark"></canvas>
+
+                    <!-- Botones al lado derecho del canvas -->
+                    <div class="d-flex flex-column ms-0">
+                        <button class="btn btn-danger btn-custom mt-3 mx-0" onclick="clearCanvas()">Limpiar</button>
+                        <button class="btn btn-dark btn-custom mt-3 mx-0" onclick="evaluateDrawing()">Calificar</button>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+
+    <!-- Modal para mostrar resultados -->
+    <div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resultModalLabel">Resultado de la Lección</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="stars" class="text-center mb-4">
+                        <!-- Aquí se mostrarán las estrellas -->
+                    </div>
+                    <p id="resultMessage" class="text-center"></p>
+                </div>
+                <!-- Mostrar calificación -->
+                <div class="text-center mt-3">
+                    <h3 id="scoreDisplay"></h3>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="retryBtn">Volver a Intentar</button>
+                    <button type="button" class="btn btn-success" id="nextExerciseBtn">Siguiente Nivel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="correctSound" src="/assets/sonidos/correcto.mp3"></audio>
+    <audio id="incorrectSound" src="/assets/sonidos/error.mp3"></audio>
+    <audio id="completedSound" src="/assets/sonidos/completado.mp3"></audio>
+    <audio id="twoStarsSound" src="/assets/sonidos/medio.mp3"></audio>
+    <audio id="oneStarSound" src="/assets/sonidos/lost.mp3"></audio>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+
+        const avatarAlumno = sessionStorage.getItem('avatarAlumno');
+        const nombreAlumno = sessionStorage.getItem('nombreAlumno');
+        const codigoAlumno = sessionStorage.getItem('coidgoAlumno');
+        const btnVolver = document.getElementById('btn-volver');
+
+        btnVolver.addEventListener('click', () => {
+            window.location.href = '/aprendeJugando'
+        })
+
+
+        const canvas = document.getElementById('drawArea');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let startX, startY;
+        let drawnLines = [];
+        let intersectionPoints = [];
+        let hitIntersections = new Set();
+        let currentLevel = 0;
+        let totalScore = 0;
+        const totalLevels = 12;
+        let attempts = 0;
+        const maxAttempts = 3;
+
+        let levels = [
+            { image: '2.png', intersections: [{ x: 208, y: 138 }, { x: 207, y: 371 }, { x: 193, y: 335 }, { x: 313, y: 176 }, { x: 315, y: 370 }] },
+            { image: '5.png', intersections: [{ x: 237, y: 126 }, { x: 185, y: 144 }, { x: 230, y: 224 }, { x: 188, y: 360 }, { x: 188, y: 230 }, { x: 290, y: 126 }] },
+            { image: '6.png', intersections: [{ x: 278, y: 125 }, { x: 177, y: 258 }, { x: 295, y: 363 }, { x: 260, y: 214 }] },
+            { image: '9.png', intersections: [{ x: 212, y: 375 }, { x: 324, y: 180 }, { x: 175, y: 225 }, { x: 324, y: 238 }] },
+            { image: 'b.png', intersections: [{ x: 171, y: 106 }, { x: 171, y: 405 }, { x: 213, y: 252 }, { x: 332, y: 333 }] },
+            { image: 'd.png', intersections: [{ x: 332, y: 105 }, { x: 332, y: 406 }, { x: 290, y: 251 }, { x: 171, y: 325 }] },
+            { image: 'l.png', intersections: [{ x: 250, y: 115 }, { x: 250, y: 400 }] },
+            { image: 'p.png', intersections: [{ x: 160, y: 120 }, { x: 160, y: 400 }, { x: 180, y: 262 }, { x: 230, y: 95 }, { x: 345, y: 195 }] },
+            { image: 'q.png', intersections: [{ x: 342, y: 120 }, { x: 342, y: 400 }, { x: 320, y: 260 }, { x: 275, y: 95 }, { x: 160, y: 195 }] },
+            { image: 's.png', intersections: [{ x: 285, y: 150 }, { x: 180, y: 205 }, { x: 320, y: 300 }, { x: 195, y: 335 }] },
+            { image: 't.png', intersections: [{ x: 252, y: 115 }, { x: 252, y: 405 }, { x: 215, y: 225 }, { x: 305, y: 225 }] },
+            { image: 'z.png', intersections: [{ x: 200, y: 150 }, { x: 315, y: 150 }, { x: 209, y: 306 }, { x: 287, y: 206 }, { x: 315, y: 348 }] }
+        ];
+
+        let savedImage;
+
+        function loadImage() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const img = new Image();
+            img.src = `/assets/numeros_letras/${levels[currentLevel].image}`;
+            img.onload = () => {
+                ctx.drawImage(img, 50, 50, 400, 400);
+                intersectionPoints = levels[currentLevel].intersections;
+                drawIntersections();
+
+                // Guardamos el estado inicial de la imagen y puntos de intersección
+                savedImage = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            };
+            document.getElementById('levelCounter').innerText = `Nivel: ${currentLevel + 1}/12`;
+            hitIntersections.clear();
+        }
+        function clearCanvas() {
+            // Limpiar solo las líneas dibujadas por el usuario
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Restaurar la imagen de fondo y los puntos de intersección guardados
+            if (savedImage) {
+                ctx.putImageData(savedImage, 0, 0);
+            }
+
+            // Limpiar las líneas almacenadas en el array `drawnLines`
+            drawnLines = [];
+            hitIntersections.clear();  // Reiniciar los puntos tocados
+        }
+
+
+        function drawIntersections() {
+            intersectionPoints.forEach(point => {
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, 8, 0, Math.PI * 2);
+                ctx.fillStyle = 'red';
+                ctx.fill();
+            });
+        }
+
+        canvas.addEventListener('mousedown', (e) => {
+            isDrawing = true;
+            startX = e.offsetX;
+            startY = e.offsetY;
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDrawing) {
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 3;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+                startX = e.offsetX;
+                startY = e.offsetY;
+                checkIntersections(startX, startY);
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDrawing = false;
+        });
+
+        function checkIntersections(x, y) {
+            intersectionPoints.forEach((point, index) => {
+                const distance = Math.sqrt((x - point.x) ** 2 + (y - point.y) ** 2);
+                if (distance < 10) {
+                    hitIntersections.add(index);
+                }
+            });
+        }
+
+
+        function evaluateDrawing() {
+            const totalIntersections = intersectionPoints.length;
+            const touchedIntersections = hitIntersections.size;
+            const score = (touchedIntersections / totalIntersections) * 100;
+            totalScore += score; // Acumular el score en el total
+
+            if (currentLevel < levels.length - 1) {
+                currentLevel++;
+
+                loadImage(); // Cargar el siguiente nivel
+            } else {
+                showFinalScore(); // Mostrar el puntaje final al finalizar todos los niveles
+            }
+        }
+
+        function showFinalScore() {
+            const finalScore = totalScore / totalLevels; // Calcular el puntaje final promedio
+            let starsHTML = '';
+            let message = '';
+
+            if (finalScore === 100) {
+                starsHTML = '<img src="/assets/estrella.png" alt="Estrella">'.repeat(3);
+                message = '¡Excelente trabajo! Perfecto.';
+                document.getElementById('completedSound').play();
+                document.getElementById('retryBtn').style.display = 'none';
+            } else if (finalScore >= 50) {
+                starsHTML = '<img src="/assets/estrella.png" alt="Estrella">'.repeat(2);
+                message = '¡Buen trabajo! Sigue practicando.';
+                document.getElementById('twoStarsSound').play();
+                document.getElementById('retryBtn').style.display = 'block';
+            } else {
+                starsHTML = '<img src="/assets/estrella.png" alt="Estrella">';
+                message = '¡Puedes mejorar! Inténtalo de nuevo.';
+                document.getElementById('oneStarSound').play();
+                document.getElementById('retryBtn').style.display = 'block';
+            }
+
+            // Mostrar el puntaje final y estrellas en el modal
+            document.getElementById('stars').innerHTML = starsHTML;
+            document.getElementById('resultMessage').innerText = message;
+            document.getElementById('scoreDisplay').innerHTML = `Calificación: ${finalScore.toFixed(2)}%`;
+            
+
+            if (finalScore < 100 && attempts < maxAttempts) {
+                attempts++;
+                document.getElementById('retryBtn').textContent = `Intento ${attempts} de ${maxAttempts}`;
+                document.getElementById('retryBtn').style.display = 'block';
+                //document.getElementById('nextExerciseBtn').style.display = 'none';
+            } else {
+                document.getElementById('retryBtn').style.display = 'none';
+                document.getElementById('nextExerciseBtn').style.display = 'block';
+            }
+            document.getElementById('nextExerciseBtn').addEventListener('click', () => {
+                window.location.href = "/aprendeJugando";
+            });
+
+            localStorage.setItem('trazo', `${finalScore.toFixed(2)}`); 
+            $('#resultModal').modal('show'); // Mostrar el modal solo después de completar todos los niveles
+        }
+
+        function resetGame() {
+            currentLevel = 0;
+            totalScore = 0;
+            loadImage()
+        }
+        document.getElementById('retryBtn').addEventListener('click', () => {
+            $('#resultModal').modal('hide');
+            resetGame();
+        });
+
+        window.onload = loadImage;
+    </script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vista del Alumno</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        const idAlumno = sessionStorage.getItem('idAlumno');
+        if (!idAlumno) {
+            window.location.href = '/'
+        }
+
+    </script>
+
+    <style>
+        /* Paleta de colores */
+        :root {
+            --color-azul: rgb(56, 182, 255);
+            --color-verde: rgb(149, 253, 17);
+            --color-rosa: rgb(237, 26, 119);
+            --color-morado: rgb(199, 0, 255);
+            --color-naranja: rgb(255, 167, 16);
+            --color-amarillo: rgb(253, 215, 0);
+            --rojo: rgb(255, 34, 34);
+        }
+
+        /* Estilo del body con imagen de fondo */
+        body {
+            background-image: url('/assets/fondoPrincipal.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        /* Estilos de las cards para los módulos */
+        .card-visual {
+            background-color: rgb(56, 182, 255);
+            transition: transform 0.2s, box-shadow 0.2s;
+
+        }
+
+        .card-visual {
+            background-color: rgb(56, 182, 255);
+            /* Color de la paleta */
+            transition: transform 0.2s, box-shadow 0.2s;
+
+
+        }
+
+
+        .card-visual:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(56, 182, 255, 0.6);
+            cursor: pointer;
+        }
+
+        .card-orden {
+            background-color: rgb(149, 253, 17);
+            /* Color de la paleta */
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card-orden:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(149, 253, 17, 0.6);
+            cursor: pointer;
+        }
+
+        .card-escritura-trazado {
+            background-color: rgb(237, 26, 119);
+            /* Color de la paleta */
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card-escritura-trazado:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(237, 26, 119, 0.6);
+            cursor: pointer;
+        }
+
+        .card-auditivo {
+            background-color: rgb(255, 167, 16);
+            /* Color de la paleta */
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card-auditivo:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 167, 16, 0.6);
+            cursor: pointer;
+        }
+
+        /* Estilos comunes para las cards */
+        .card {
+            display: flex;
+            flex-direction: row !important;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 15px;
+            color: white;
+            font-weight: 700;
+            padding: 30px;
+            height: 200px;
+        }
+
+        /* Estilo para el contenedor del texto */
+        .card-text-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            /* Centra el texto verticalmente */
+            text-align: left;
+            /* Alinea el texto a la izquierda */
+        }
+
+        /* Estilo para las imágenes a la derecha */
+        .card img {
+            width: 150px;
+            height: auto;
+            margin-left: 20px;
+            flex-shrink: 0;
+        }
+
+        /* Espaciado para el contenedor */
+        .container {
+            margin-top: 50px;
+        }
+
+        /* Estilo de los avatares en el modal */
+        .avatar {
+            width: 100px;
+            height: 100px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        .avatar:hover {
+            transform: scale(1.1);
+            transition: 0.3s;
+        }
+
+        .selected-avatar {
+            border: 3px solid #007bff;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+            border-radius: 10px;
+        }
+
+        .btn-primary {
+            background-color: var(--color-azul);
+            border-color: var(--color-azul);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-verde);
+            border-color: var(--color-verde);
+        }
+
+        /* Botones secundarios */
+        .btn-secondary {
+            background-color: var(--color-rosa);
+            border-color: var(--color-rosa);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--color-morado);
+            border-color: var(--color-morado);
+        }
+
+        /* Estilos para el navbar más grande */
+        .navbar {
+            height: 100px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            background-color: var(--color-morado) !important;
+        }
+
+        /* Ajuste para el nombre del maestro */
+        #nombreMaestro {
+            margin-right: 20px;
+            /* Separación del avatar */
+        }
+
+        /* Separar el botón de Cerrar Sesión del avatar */
+        .navbar .btn-danger {
+            margin-left: 40px;
+            /* Añadir más espacio entre el botón y el avatar */
+            background-color: rgb(255, 0, 0) !important;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            color: white !important;
+        }
+
+        .navbar a {
+            color: white !important;
+           font-size: 3rem !important;
+        }
+
+        .card-disabled {
+            position: relative;
+            pointer-events: none;
+            /* Desactiva clics */
+            filter: grayscale(50%);
+            /* Hace el card parcialmente en escala de grises */
+            opacity: 0.9;
+            /* Reduce un poco la opacidad para mostrar que está deshabilitado */
+        }
+
+        .card-disabled::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.4);
+            pointer-events: none;
+        }
+
+        .icono-confirmacion:hover {
+            transform: scale(1.1);
+        }
+
+        .text-center p {
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
+            font-weight: bold;
+        }
+
+
+        @media (min-width: 768px) {
+            .card-text-container h3 {
+                font-size: 2.5rem;
+                font-weight: bold;
+                /* Ajusta este valor según tus preferencias */
+            }
+
+            .card-text-container p {
+                font-size: 1.5rem;
+                font-weight: lighter
+            }
+        }
+
+        /* Estilo para pantallas pequeñas (teléfonos) */
+        @media (max-width: 767px) {
+            .card-text-container h3 {
+                font-size: 2rem;
+                font-weight: bold;
+                /* Ajusta este valor según tus preferencias */
+            }
+
+            .card-text-container p {
+                font-size: 1rem;
+                font-weight: lighter
+                    /* Ajusta este valor según tus preferencias */
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">DisgraKids</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item d-flex align-items-center">
+                        <h3 id="nombreAlumno" class="nav-link"></h3>
+                    </li>
+                    <li class="nav-item">
+                        <img id="avatarAlumno" src="" alt="Avatar" class="rounded-circle" width="50" height="50">
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-danger d-flex align-items-center" onclick="logout()">
+                            <i class="fas fa-door-open" style="margin-right: 8px;"></i> Salir
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal - Cards con imágenes a la derecha -->
+    <div class="container">
+
+        <div class="row justify-content-center">
+            <!-- Card Módulo Visual -->
+            <div class="col-md-8 mb-4">
+                <div class="card card-visual" id="card-visual">
+                    <div class="card-text-container">
+                        <h3>Módulo Visual</h3>
+                        <p>Desarrolla la percepción visual</p>
+                    </div>
+                    <img src="/assets/visual.png" alt="Módulo Visual"> <!-- Imagen grande del lado derecho -->
+                </div>
+            </div>
+            <!-- Card Orden y Comprensión -->
+            <div class="col-md-8 mb-4">
+                <div class="card card-orden" id="card-orden">
+                    <div class="card-text-container">
+                        <h3>Orden y Comprensión</h3>
+                        <p>Practica el orden y la comprensión</p>
+                    </div>
+                    <img src="/assets/orden.png" alt="Orden y Comprensión"> <!-- Imagen grande del lado derecho -->
+                </div>
+            </div>
+            <!-- Card Escritura y Trazado -->
+            <div class="col-md-8 mb-4">
+                <div class="card card-escritura-trazado" id="card-escritura-trazado">
+                    <div class="card-text-container">
+                        <h3>Escritura y Trazado</h3>
+                        <p>Mejora tu habilidad de escritura y trazado</p>
+                    </div>
+                    <img src="/assets/escritura.png" alt="Escritura y Trazado"> <!-- Imagen grande del lado derecho -->
+                </div>
+            </div>
+            <!-- Card Módulo Auditivo -->
+            <div class="col-md-8 mb-4">
+                <div class="card card-auditivo" id="card-auditivo">
+                    <div class="card-text-container">
+                        <h3>Módulo Auditivo</h3>
+                        <p>Desarrolla la percepción auditiva</p>
+                    </div>
+                    <img src="/assets/auditivo.png" alt="Módulo Auditivo"> <!-- Imagen grande del lado derecho -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para seleccionar avatar -->
+    <div class="modal fade" id="avatarModal" tabindex="-1" aria-labelledby="avatarModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="avatarModalLabel">Selecciona un Avatar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row" id="avatarsContainer">
+                        <!-- Aquí se mostrarán los avatares -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="guardarAvatarBtn" disabled>Guardar Avatar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal de confirmación -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">¿Deseas guardar tu progreso?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <p>Antes de salir, ¿te gustaría guardar tu progreso?</p>
+                    <div class="d-flex justify-content-around">
+                        <!-- Contenedor del icono de Check y texto -->
+                        <div class="text-center">
+                            <i class="fas fa-check-circle icono-confirmacion" id="confirmSave"
+                                style="font-size: 4rem; color: rgb(149,253,17); cursor: pointer;"></i>
+                            <p>Sí</p>
+                        </div>
+                        <!-- Contenedor del icono de X y texto -->
+                        <div class="text-center">
+                            <i class="fas fa-times-circle icono-confirmacion" id="confirmLogout"
+                                style="font-size: 4rem; color: rgb(255,34,34); cursor: pointer;"></i>
+                            <p>No</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        const avatarAlumno = sessionStorage.getItem('avatarAlumno');
+        const nombreAlumno = sessionStorage.getItem('nombreAlumno');
+        const codigoAlumno = sessionStorage.getItem('coidgoAlumno');
+
+        const visual = localStorage.getItem('visual');
+        const orden = localStorage.getItem('orden');
+        const trazo = localStorage.getItem('trazo');
+        const auditivo = localStorage.getItem('auditivo');
+
+
+
+        // Verificar si la variable de sesión 'avatarAlumno' está vacía
+        document.addEventListener("DOMContentLoaded", function () {
+            const nombreElemento = document.getElementById('nombreAlumno');
+            const avatarElemento = document.getElementById('avatarAlumno');
+            const cardVisual = document.getElementById('card-visual')
+            const cardOrden = document.getElementById('card-orden')
+            const cardEscrituraTrazo = document.getElementById('card-escritura-trazado')
+            const cardAuditivo = document.getElementById('card-auditivo')
+
+            const visualCard = document.querySelector('.card-visual');
+            const ordenCard = document.querySelector('.card-orden');
+            const trazadoCard = document.querySelector('.card-escritura-trazado');
+            const auditivoCard = document.querySelector('.card-auditivo');
+
+            if (visual) {
+                visualCard.classList.add('card-disabled');
+            }
+            if (orden) {
+                ordenCard.classList.add('card-disabled');
+            }
+            if (trazo) {
+                trazadoCard.classList.add('card-disabled');
+            }
+            if (auditivo) {
+                auditivoCard.classList.add('card-disabled');
+            }
+            if (visual && orden && trazo) {
+                logout()
+            }
+
+            cardVisual.addEventListener('click', () => {
+                window.location.href = 'aprendeJugando/visual'
+            });
+            cardOrden.addEventListener('click', () => {
+                window.location.href = 'aprendeJugando/orden-Comprension'
+            })
+            cardEscrituraTrazo.addEventListener('click', () => {
+                window.location.href = 'aprendeJugando/trazo-Letras'
+            })
+            cardAuditivo.addEventListener('click', () => {
+                window.location.href = 'aprendeJugando/auditivo'
+            })
+
+
+
+            if (!avatarAlumno || avatarAlumno === '') {
+                // Si no hay avatar asignado, abrir el modal
+                $('#avatarModal').modal('show');
+                cargarAvatares();
+            } else {
+                avatarElemento.src = avatarAlumno;
+            }
+
+            if (nombreAlumno) {
+                // Dividir el nombre completo en palabras y tomar la primera
+                const primerNombre = nombreAlumno.split(' ')[0];
+                nombreElemento.textContent = primerNombre;
+            }
+
+        });
+
+        async function cargarAvatares() {
+            try {
+                let avatars = [];
+                for (i = 1; i <= 12; i++) {
+                    avatars[i] = `avatar${i}.png`
+                }
+
+                const avatarsContainer = document.getElementById('avatarsContainer');
+                avatarsContainer.innerHTML = ''; // Limpiar el contenedor antes de agregar
+
+                avatars.forEach(avatar => {
+                    const avatarElement = document.createElement('div');
+                    avatarElement.classList.add('col-4', 'mb-3');
+                    avatarElement.innerHTML = `
+                <img src="/avatars/alumnos/${avatar}" alt="Avatar" class="img-thumbnail avatar-select" data-avatar="${avatar}" style="cursor: pointer;">
+            `;
+                    avatarsContainer.appendChild(avatarElement);
+                });
+
+                // Evento de selección de avatar
+                document.querySelectorAll('.avatar-select').forEach(img => {
+                    img.addEventListener('click', function () {
+                        // Remover la clase 'selected-avatar' de todos los avatares
+                        document.querySelectorAll('.avatar-select').forEach(img => img.classList.remove('selected-avatar'));
+
+                        // Agregar la clase 'selected-avatar' al avatar que fue clickeado
+                        this.classList.add('selected-avatar');
+
+                        // Habilitar el botón de guardar
+                        document.getElementById('guardarAvatarBtn').disabled = false;
+                    });
+                });
+            } catch (error) {
+                console.error('Error al cargar avatares:', error);
+            }
+        }
+
+        // Guardar el avatar seleccionado
+        document.getElementById('guardarAvatarBtn').addEventListener('click', async function () {
+            const avatarSeleccionado = document.querySelector('.selected-avatar').getAttribute('data-avatar');
+
+            try {
+                const response = await fetch(`/api/alumnos/avatar/${idAlumno}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ avatar: `/avatars/alumnos/${avatarSeleccionado}` }) // Solo actualiza el avatar
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+
+                    // Actualizar el avatar en la sesión
+                    sessionStorage.setItem('avatarAlumno', result.alumno.avatar);
+
+                    // Cerrar el modal y mostrar una notificación
+                    $('#avatarModal').modal('hide');
+                    alert('Avatar actualizado con éxito');
+                    location.reload();
+                } else {
+                    alert('Error al actualizar el avatar');
+                }
+            } catch (error) {
+                console.error('Error al actualizar el avatar:', error);
+                alert('Hubo un problema al actualizar el avatar.');
+            }
+        });
+
+        // Función para enviar el puntaje de un nivel a la API
+        async function enviarPunteo(tipo, punteo) {
+            const codigoAlumno = sessionStorage.getItem('codigoAlumno');
+
+            if (!codigoAlumno) {
+                throw new Error('El código del alumno no está disponible. Inicia sesión de nuevo.');
+            }
+
+            try {
+                const response = await fetch('/api/punteos/asignar-punteo', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        codigo: codigoAlumno,
+                        tipo,
+                        punteo
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorResult = await response.json();
+                    throw new Error(errorResult.message || 'Error al asignar el puntaje.');
+                }
+            } catch (error) {
+                throw new Error(`Error de red: ${error.message}`);
+            }
+        }
+
+
+        async function logout() {
+            // Abrir el modal de confirmación
+            const logoutModal = new bootstrap.Modal(document.getElementById('logoutModal'));
+            // Si alguna de las variables existe, mostrar el modal
+            if (visual || orden || trazo|| auditivo) {
+                // Abrir el modal de confirmación
+                logoutModal.show();
+
+                // Obtener los iconos del modal
+                const confirmSave = document.getElementById('confirmSave');
+                const confirmLogout = document.getElementById('confirmLogout');
+
+                // Evento para el icono de confirmación (guardar progreso)
+                confirmSave.onclick = async function () {
+
+
+                    // Array para almacenar las promesas de guardar puntajes
+                    const guardarPromesas = [];
+
+                    // Disparar la función de guardar puntaje para cada nivel que exista
+                    if (visual) {
+                        guardarPromesas.push(enviarPunteo('Visual', parseFloat(visual))); // Usar parseFloat para mantener decimales
+                    }
+                    if (orden) {
+                        guardarPromesas.push(enviarPunteo('Orden', parseFloat(orden))); // Usar parseFloat para mantener decimales
+                    }
+                    if (trazo) {
+                        guardarPromesas.push(enviarPunteo('Trazo', parseFloat(trazo))); // Usar parseFloat para mantener decimales
+                    }
+                    if (auditivo) {
+                        guardarPromesas.push(enviarPunteo('Auditivo', parseFloat(auditivo))); // Usar parseFloat para mantener decimales
+                    }
+
+                    // Ejecutar todas las promesas de guardar puntaje en paralelo
+                    try {
+                        await Promise.all(guardarPromesas);
+                        alert('Progreso guardado exitosamente.');
+
+                        // Limpiar el sessionStorage y localStorage solo si todo se guarda correctamente
+                        sessionStorage.clear();
+                        localStorage.clear();
+                        window.location.href = '/';
+                    } catch (error) {
+                        console.error('Error al guardar el progreso:', error);
+                        alert('Hubo un problema al guardar el progreso. Por favor, intenta de nuevo.');
+                    }
+                };
+
+                // Evento para el icono de cancelación (cerrar sin guardar)
+                confirmLogout.onclick = function () {
+                    sessionStorage.clear();
+                    localStorage.clear();
+                    window.location.href = '/';
+                };
+            } else {
+                // Si ninguna de las variables existe, cerrar sesión directamente
+                sessionStorage.clear();
+                localStorage.clear();
+                window.location.href = '/';
+            }
+        }
+
+    </script>
+</body>
+
+</html>

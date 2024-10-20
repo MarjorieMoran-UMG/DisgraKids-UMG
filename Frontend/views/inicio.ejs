@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de Bienvenida</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- CSS personalizado -->
+    <link rel="stylesheet" href="/css/stylesIndex.css">
+</head>
+
+<body>
+    <div class="cloud-container" id="cloudContainer">
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+        <div class="cloud cloud-4"></div>
+        <div class="cloud cloud-5"></div>
+        <div class="cloud cloud-6"></div>
+        <div class="cloud cloud-7"></div>
+    </div>
+
+    <div class="image-container" id="imageContainer">
+        <img src="/assets/Niño.png" class="child-left" alt="Niño Izquierdo">
+     
+        <img src="/assets/Niña.png" class="child-right" alt="Niña Derecha">
+
+        <div class="container-inicial" id="containerInicial">
+            <img src="/assets/Jirafa.png" class="giraffe" alt="Jirafa">
+            <h1>BIENVENID@</h1>
+            <p>CLIC PARA INGRESAR</p>
+            <button class="btn-ingresar" id="ingresarBtn">Ingresar</button>
+        </div>
+    </div>
+
+    <div class="codigo-container" id="codigoContainer" style="display: none;">
+        <div class="card p-5">
+            <h2>INGRESA TU CÓDIGO</h2>
+            <input type="number" id="codigoInput" min="0" max="9999" required placeholder="0000" />
+        </div>
+    </div>
+    <button class="btn btn-volver btn-lg" id="btn-volver" style="display: none;">
+        <i class="fas fa-arrow-left"></i> Volver
+    </button>
+    <div class="botonera-container" id="botoneraContainer" style="display: none;">
+
+        <div class="d-flex justify-content-between">
+            <button class="btn btn-seleccion btn-lg" id="btn-alumno">ALUMNO</button>
+            <button class="btn btn-seleccion-maestro btn-lg" id="btn-maestro">MAESTRO</button>
+        </div>
+
+    </div>
+
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const imageContainer = document.getElementById('imageContainer');
+            const containerInicial = document.getElementById('containerInicial');
+            const ingresarBtn = document.getElementById('ingresarBtn');
+            const codigoContainer = document.getElementById('codigoContainer');
+            const cloudContainer = document.getElementById('cloudContainer');
+            const codigoInput = document.getElementById('codigoInput');
+            const botoneraContainer = document.getElementById('botoneraContainer');
+            const alumnoBtn = document.getElementById('btn-alumno');
+            const maestroBtn = document.getElementById('btn-maestro');
+            const volverBtn = document.getElementById('btn-volver');
+
+
+            function handleClick() {
+                imageContainer.classList.add('slide-out');
+
+                setTimeout(() => {
+                    imageContainer.style.display = 'none'; // Ocultar el container de la bienvenida
+                    volverBtn.style.display = 'flex';
+                    botoneraContainer.style.display = 'flex'; // Mostrar el nuevo contenido
+                }, 1000);
+            }
+
+            function alumnoClick() {
+                cloudContainer.classList.add('fade-out'); // Ocultar nubes con animación
+                botoneraContainer.style.display = 'none';
+                // Cambiar el fondo de la página (a una imagen)
+                setTimeout(() => {
+                    document.body.style.backgroundImage = 'url("/assets/fondoPrincipal.png")'; // Cambia 'nuevoFondo.jpg' por la imagen que desees
+                    document.body.style.backgroundSize = 'cover';
+                    document.body.style.backgroundRepeat = 'no-repeat';
+                    document.body.style.backgroundPosition = 'center';
+
+                    // Ocultar el container de la bienvenida después de la animación
+                    setTimeout(() => {
+                        imageContainer.style.display = 'none'; // Ocultar el container de la bienvenida
+                        codigoContainer.style.display = 'flex'; // Mostrar el nuevo contenido
+                    }, 1000);
+                }, 500);
+            }
+
+            function maestroClick() {
+                window.location.href = 'login'
+            }
+
+            codigoInput.addEventListener('input', async function () {
+    if (this.value.length > 4) {
+        this.value = this.value.slice(0, 4); // Limitar a 4 dígitos
+    }
+
+    // Disparar evento cuando se ingresan exactamente 4 dígitos
+    if (this.value.length === 4) {
+        // Realizar solicitud al backend para buscar al alumno por su código
+        try {
+            const response = await fetch(`/api/alumnos/buscar/${this.value}`);
+            const alumnoData = await response.json();
+
+            if (!response.ok) {
+                alert('No se encontró al alumno o hubo un error');
+                return;
+            }
+
+            // Almacenar los datos del alumno en sessionStorage
+            sessionStorage.setItem('nombreAlumno', alumnoData.nombreCompleto);
+            sessionStorage.setItem('avatarAlumno', alumnoData.avatar);
+            sessionStorage.setItem('codigoAlumno', alumnoData.codigo);
+            sessionStorage.setItem('idAlumno', alumnoData._id);
+
+            // Redireccionar a la página de visualización
+            window.location.href = 'aprendeJugando';
+        } catch (error) {
+            console.error('Error al buscar el alumno:', error);
+            alert('Hubo un problema al procesar la solicitud.');
+        }
+    }
+});
+            // Añadir eventos de clic al botón y al container inicial
+            ingresarBtn.addEventListener('click', handleClick);
+            containerInicial.addEventListener('click', handleClick);
+            alumnoBtn.addEventListener('click', alumnoClick);
+            maestroBtn.addEventListener('click', maestroClick);
+            volverBtn.addEventListener('click', () => {
+                location.reload();
+            });
+        });
+    </script>
+
+</body>
+
+</html>

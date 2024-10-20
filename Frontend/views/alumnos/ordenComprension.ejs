@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Orden y Comprensión</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script>
+        const idAlumno = sessionStorage.getItem('idAlumno');
+        if(!idAlumno){
+          window.location.href='/'
+      }
+  </script>
+    <style>
+        /* Paleta de colores */
+        :root {
+            --azul: rgb(56, 182, 255);
+            --verde: rgb(149, 253, 17);
+            --rosado: rgb(237, 26, 119);
+            --morado: rgb(199, 0, 255);
+            --naranja: rgb(255, 167, 16);
+            --amarillo: rgb(253, 215, 0);
+            --rojo: rgb(255, 0, 0);
+        }
+
+        body {
+            background-image: url('/assets/FondoModuloOrden.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .game-container {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            height: 100%;
+            max-width: 1024px;
+            max-height: 1200px;
+            position: relative;
+        }
+
+        .guide-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 45px;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .guide-item {
+            background-color: var(--azul);
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 3rem;
+            font-weight: bold;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .order-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .order-slot {
+            width: 150px;
+            height: 150px;
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            border: 2px dashed var(--azul);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .unordered-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .draggable-item {
+            width: 150px;
+            height: 150px;
+            border-radius: 10px;
+            background-color: var(--amarillo);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            cursor: grab;
+        }
+
+        .draggable-item.used {
+            background-color: rgba(253, 215, 0, 0.5);
+            color: rgba(0, 0, 0, 0.5);
+            cursor: not-allowed;
+        }
+
+        .correct {
+            background-color: var(--verde) !important;
+            color: white;
+        }
+
+        .incorrect {
+            background-color: var(--rojo) !important;
+            color: white;
+        }
+
+        .level {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 2rem;
+            color: var(--morado);
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        #validateBtn {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: var(--azul);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: not-allowed;
+            height: 50px;
+            width: 150px;
+            opacity: 0.5;
+        }
+
+        #validateBtn.active {
+            cursor: pointer;
+            opacity: 1;
+        }
+
+        #validateBtn:hover {
+            background-color: var(--naranja);
+        }
+
+        .modal-dialog {
+            max-width: 900px;
+            margin: 2rem auto;
+        }
+
+        .modal-body {
+            font-size: 1.5rem;
+        }
+
+        #stars img {
+            width: 120px;
+            margin: 0 15px;
+        }
+        .btn-volver {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            padding-left: 15px !important;
+            padding: 0.5vw 2vw;
+            font-size: 1.2vw;
+            background-color: var(--morado);
+            border: none;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+
+        }
+
+        .btn-volver :hover {
+            background-color: var(--rosa);
+            color: white;
+        }
+
+        .btn-volver i {
+            margin-right: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .guide-container,
+            .order-container,
+            .unordered-container {
+                flex-wrap: wrap;
+            }
+
+            .order-slot,
+            .draggable-item,
+            .guide-item {
+                width: 60px;
+                height: 60px;
+                font-size: 3rem;
+            }
+
+            .game-container {
+                width: 100%;
+                padding: 20px;
+            }
+
+            #validateBtn {
+                font-size: 1rem;
+                padding: 8px 15px;
+            }
+
+            .level {
+                font-size: 1.5rem;
+                order: 1;
+            }
+
+            .guide-container {
+                order: 2;
+                margin-top: 50px;
+            }
+
+            #stars img {
+                width: 70px;
+                margin: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <button class="btn btn-volver btn-lg" id="btn-volver">
+        <i class="fas fa-arrow-left"></i> Menú
+    </button>
+    <div class="game-container">
+        <div id="level" class="level">Nivel: 1/5</div>
+        <div class="guide-container" id="guideContainer">
+        </div>
+        <div class="order-container" id="orderContainer">
+        </div>
+
+        <div class="unordered-container" id="unorderedContainer">
+        </div>
+
+        <button id="validateBtn" class="btn btn-primary">Validar</button>
+    </div>
+
+    <div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resultModalLabel">Resultado de la Lección</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="stars" class="text-center mb-4">
+                        <!-- Aquí se mostrarán las estrellas -->
+                    </div>
+                    <p id="resultMessage" class="text-center"></p>
+                </div>
+                <div class="text-center mt-3">
+                    <h3 id="scoreDisplay"></h3>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="retryBtn">Volver a Intentar</button>
+                    <button type="button" class="btn btn-success" id="nextExerciseBtn">Siguiente Nivel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="correctSound" src="/assets/sonidos/correcto.mp3"></audio>
+    <audio id="incorrectSound" src="/assets/sonidos/error.mp3"></audio>
+    <audio id="completedSound" src="/assets/sonidos/completado.mp3"></audio>
+    <audio id="mediumSound" src="/assets/sonidos/medio.mp3"></audio>
+    <audio id="lostSound" src="/assets/sonidos/lost.mp3"></audio>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+
+        
+        const avatarAlumno = sessionStorage.getItem('avatarAlumno');
+        const nombreAlumno = sessionStorage.getItem('nombreAlumno');
+        const codigoAlumno = sessionStorage.getItem('coidgoAlumno');
+
+        const levels = [
+            { correct: ['a', 'e', 'i', 'o', 'u'], unordered: ['u', 'i', 'a', 'e', 'o'] },
+            { correct: ['1', '2', '3', '4', '5'], unordered: ['3', '5', '1', '2', '4'] },
+            { correct: ['6', '7', '8', '9', '10'], unordered: ['9', '7', '6', '10', '8'] },
+            { correct: ['a', 'b', 'c', 'd', 'e'], unordered: ['e', 'b', 'd', 'c', 'a'] },
+            { correct: ['f', 'g', 'h', 'i', 'j'], unordered: ['h', 'i', 'f', 'j', 'g'] },
+            
+            
+        ];
+
+        let currentLevel = 0;
+        let totalErrors = 0;
+        let errorsPerLevel = Array(levels.length).fill(0);
+        let attempts = 0;
+        const maxAttempts = 3;
+
+        const orderContainer = document.getElementById('orderContainer');
+        const unorderedContainer = document.getElementById('unorderedContainer');
+        const guideContainer = document.getElementById('guideContainer');
+        const validateBtn = document.getElementById('validateBtn');
+        const levelElement = document.getElementById('level');
+        const correctSound = document.getElementById('correctSound');
+        const incorrectSound = document.getElementById('incorrectSound');
+        const completedSound = document.getElementById('completedSound');
+        const mediumSound = document.getElementById('mediumSound');
+        const lostSound = document.getElementById('lostSound');
+        const btnVolver = document.getElementById('btn-volver');
+
+        btnVolver.addEventListener('click', ()=>{
+            window.location.href='/aprendeJugando'
+        })
+
+        function loadLevel(levelIndex) {
+            const levelData = levels[levelIndex];
+            levelElement.textContent = `Nivel: ${levelIndex + 1}/5`;
+
+            guideContainer.innerHTML = '';
+            levelData.correct.forEach(letter => {
+                const guideItem = document.createElement('div');
+                guideItem.classList.add('guide-item');
+                guideItem.textContent = letter;
+                guideContainer.appendChild(guideItem);
+            });
+
+            orderContainer.innerHTML = '';
+            levelData.correct.forEach(() => {
+                const orderSlot = document.createElement('div');
+                orderSlot.classList.add('order-slot');
+                orderContainer.appendChild(orderSlot);
+            });
+
+            unorderedContainer.innerHTML = '';
+            levelData.unordered.forEach(letter => {
+                const item = document.createElement('div');
+                item.classList.add('draggable-item');
+                item.textContent = letter;
+                item.setAttribute('draggable', true);
+                unorderedContainer.appendChild(item);
+
+                item.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', item.textContent);
+                });
+            });
+
+            validateBtn.classList.remove('active');
+            validateBtn.disabled = true;
+        }
+
+        orderContainer.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        orderContainer.addEventListener('drop', (e) => {
+            const droppedLetter = e.dataTransfer.getData('text/plain');
+            const slot = e.target;
+            if (slot.classList.contains('order-slot') && slot.textContent === '') {
+                slot.textContent = droppedLetter;
+                const item = Array.from(unorderedContainer.children).find(el => el.textContent === droppedLetter);
+                item.classList.add('used');
+                checkIfAllFilled();
+            }
+        });
+
+        function checkIfAllFilled() {
+            const allSlots = Array.from(orderContainer.children);
+            const allFilled = allSlots.every(slot => slot.textContent !== '');
+            if (allFilled) {
+                validateBtn.classList.add('active');
+                validateBtn.disabled = false;
+            } else {
+                validateBtn.classList.remove('active');
+                validateBtn.disabled = true;
+            }
+        }
+
+        function validateOrder() {
+            let isLevelComplete = true;
+            const slots = Array.from(orderContainer.children);
+
+            slots.forEach((slot, index) => {
+                const correctLetter = levels[currentLevel].correct[index];
+                slot.classList.remove('correct', 'incorrect');
+
+                if (slot.textContent === correctLetter) {
+                    slot.classList.add('correct');
+                } else {
+                    slot.classList.add('incorrect');
+                    slot.textContent = '';
+                    const returnedItem = Array.from(unorderedContainer.children).find(item => item.textContent === correctLetter);
+
+                    if (returnedItem) {
+                        returnedItem.classList.remove('used');
+                    }
+
+                    errorsPerLevel[currentLevel]++;
+                    totalErrors++;
+                    isLevelComplete = false;
+                }
+            });
+
+            if (isLevelComplete) {
+                correctSound.play();
+                currentLevel++;
+                if (currentLevel < levels.length) {
+                    setTimeout(() => {
+                        loadLevel(currentLevel);
+                    }, 1000);
+                } else {
+                    setTimeout(() => {
+                        showResults();
+                    }, 1000);
+                }
+            } else {
+                incorrectSound.play();
+            }
+        }
+
+        function showResults() {
+            let starsHTML = '';
+            let message = '';
+
+            const totalAciertos = Math.max(0, levels.length * 5 - totalErrors); 
+            const correctPercentage = Math.max(0, Math.round((totalAciertos / (levels.length * 5)) * 100)); 
+
+            console.log(`Porcentaje de aciertos: ${correctPercentage}%`);
+
+            if (correctPercentage === 100) {
+                starsHTML = '<img src="/assets/estrella.png" alt="Estrella">'.repeat(3);
+                message = '¡Excelente trabajo! Perfecto.';
+                completedSound.play();
+                document.getElementById('retryBtn').style.display = 'none';
+            } else if (correctPercentage >= 50) {
+                starsHTML = '<img src="/assets/estrella.png" alt="Estrella">'.repeat(2);
+                message = '¡Buen trabajo! Sigue practicando.';
+                mediumSound.play();
+                document.getElementById('retryBtn').style.display = 'block';
+            } else {
+                starsHTML = '<img src="/assets/estrella.png" alt="Estrella">';
+                message = '¡Puedes mejorar! Inténtalo de nuevo.';
+                lostSound.play();
+                document.getElementById('retryBtn').style.display = 'block';
+            }
+
+            document.getElementById('stars').innerHTML = starsHTML;
+            document.getElementById('resultMessage').textContent = message;
+
+            if (correctPercentage < 100 && attempts < maxAttempts) {
+                attempts++;
+                document.getElementById('retryBtn').textContent = `Intento ${attempts} de ${maxAttempts}`;
+                document.getElementById('retryBtn').style.display = 'block';
+                //document.getElementById('nextExerciseBtn').style.display = 'none';
+            } else {
+                document.getElementById('retryBtn').style.display = 'none';
+                document.getElementById('nextExerciseBtn').style.display = 'block';
+                
+            }
+            document.getElementById('nextExerciseBtn').addEventListener('click', () => {
+                window.location.href = "/aprendeJugando";
+            });
+            document.getElementById('scoreDisplay').innerHTML = `Calificación: ${correctPercentage.toFixed(2)}%`;
+            localStorage.setItem('orden', `${correctPercentage.toFixed(2)}`); 
+            $('#resultModal').modal('show');
+        }
+
+        function resetGame() {
+            currentLevel = 0;
+            totalErrors = 0;
+            errorsPerLevel = Array(levels.length).fill(0);
+            loadLevel(currentLevel);
+        }
+
+        document.getElementById('retryBtn').addEventListener('click', () => {
+            $('#resultModal').modal('hide');
+            resetGame();
+        });
+
+        validateBtn.addEventListener('click', validateOrder);
+
+        loadLevel(currentLevel);
+    </script>
+
+</body>
+
+</html>
