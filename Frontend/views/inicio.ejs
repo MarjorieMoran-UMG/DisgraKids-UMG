@@ -55,12 +55,32 @@
 
     </div>
 
+<!-- Modal de Alerta -->
+<div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="alertModalLabel">Resultado</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <div id="alertContent">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
     <!-- Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const imageContainer = document.getElementById('imageContainer');
@@ -73,7 +93,7 @@
             const alumnoBtn = document.getElementById('btn-alumno');
             const maestroBtn = document.getElementById('btn-maestro');
             const volverBtn = document.getElementById('btn-volver');
-
+           
 
             function handleClick() {
                 imageContainer.classList.add('slide-out');
@@ -114,13 +134,12 @@
 
     // Disparar evento cuando se ingresan exactamente 4 dígitos
     if (this.value.length === 4) {
-        // Realizar solicitud al backend para buscar al alumno por su código
         try {
             const response = await fetch(`/api/alumnos/buscar/${this.value}`);
             const alumnoData = await response.json();
 
             if (!response.ok) {
-                alert('No se encontró al alumno o hubo un error');
+                mostrarModalAlerta('error', 'No se encontró al alumno o hubo un error');
                 return;
             }
 
@@ -130,11 +149,15 @@
             sessionStorage.setItem('codigoAlumno', alumnoData.codigo);
             sessionStorage.setItem('idAlumno', alumnoData._id);
 
-            // Redireccionar a la página de visualización
-            window.location.href = 'aprendeJugando';
+            mostrarModalAlerta('exito', `Bienvenido, ${alumnoData.nombreCompleto}`);
+
+            // Esperar un momento antes de redireccionar
+            setTimeout(() => {
+                window.location.href = 'aprendeJugando';
+            }, 1500);
         } catch (error) {
             console.error('Error al buscar el alumno:', error);
-            alert('Hubo un problema al procesar la solicitud.');
+            mostrarModalAlerta('error', 'Hubo un problema al procesar la solicitud.');
         }
     }
 });
@@ -147,6 +170,36 @@
                 location.reload();
             });
         });
+
+        // Función para mostrar el modal de alerta
+function mostrarModalAlerta(tipo, mensaje) {
+    const alertContent = document.getElementById('alertContent');
+    alertContent.innerHTML = ''; // Limpiar contenido previo
+
+    // Crear icono y mensaje basado en el tipo de alerta
+    const icon = document.createElement('i');
+    const message = document.createElement('p');
+
+    if (tipo === 'exito') {
+        icon.className = 'fas fa-check-circle';
+        icon.style.color = 'rgb(149, 253, 17)';
+        message.textContent = mensaje;
+    } else if (tipo === 'error') {
+        icon.className = 'fas fa-times-circle';
+        icon.style.color = 'rgb(255, 0, 0)';
+        message.textContent = mensaje;
+    }
+
+    icon.style.fontSize = '4rem';
+    message.style.marginTop = '1rem';
+
+    alertContent.appendChild(icon);
+    alertContent.appendChild(message);
+
+    // Mostrar el modal
+    $('#alertModal').modal('show');
+}
+
     </script>
 
 </body>

@@ -247,6 +247,25 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal de Alerta -->
+<div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="alertModalLabel">Resultado</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <div id="alertContent">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
     <!-- Scripts de Bootstrap y lógica de la aplicación -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
@@ -254,6 +273,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 
 
@@ -521,37 +541,60 @@
             window.location.href="/misAlumnos"
         });
 
-        // Guardar el avatar seleccionado
         document.getElementById('guardarAvatarBtn').addEventListener('click', async function () {
-            const avatarSeleccionado = document.querySelector('.selected-avatar').getAttribute('data-avatar');
+    const avatarSeleccionado = document.querySelector('.selected-avatar').getAttribute('data-avatar');
 
-            try {
-                const response = await fetch(`/api/profesores/profile`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ avatar: `/avatars/profesores/${avatarSeleccionado}` }) // Solo actualiza el avatar
-                });
-
-                if (response.ok) {
-                    const result = await response.json();
-
-                    // Actualizar el avatar en la sesión
-                    sessionStorage.setItem('profesorAvatar', result.profesor.avatar);
-
-                    // Cerrar el modal y mostrar una notificación
-                    $('#avatarModal').modal('hide');
-                    alert('Avatar actualizado con éxito');
-                    location.reload();
-                } else {
-                    alert('Error al actualizar el avatar');
-                }
-            } catch (error) {
-                console.error('Error al actualizar el avatar:', error);
-                alert('Hubo un problema al actualizar el avatar.');
-            }
+    try {
+        const response = await fetch(`/api/profesores/profile`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ avatar: `/avatars/profesores/${avatarSeleccionado}` })
         });
+
+        if (response.ok) {
+            const result = await response.json();
+
+            // Actualizar el avatar en la sesión
+            sessionStorage.setItem('profesorAvatar', result.profesor.avatar);
+
+            // Cerrar el modal de selección de avatar
+            $('#avatarModal').modal('hide');
+
+            // Mostrar modal de éxito
+            mostrarModalAlerta('exito', 'Avatar actualizado con éxito');
+
+            // Recargar la página después de un breve retraso
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        } else {
+            mostrarModalAlerta('error', 'Error al actualizar el avatar');
+        }
+    } catch (error) {
+        console.error('Error al actualizar el avatar:', error);
+        mostrarModalAlerta('error', 'Hubo un problema al actualizar el avatar.');
+    }
+});
+
+function mostrarModalAlerta(tipo, mensaje) {
+    const alertContent = document.getElementById('alertContent');
+    alertContent.innerHTML = '';
+
+    const icono = document.createElement('i');
+    icono.className = tipo === 'exito' ? 'fas fa-check-circle' : 'fas fa-times-circle';
+    icono.style.fontSize = '4rem';
+    icono.style.color = tipo === 'exito' ? 'rgb(149, 253, 17)' : 'rgb(255, 0, 0)';
+
+    const mensajeElemento = document.createElement('p');
+    mensajeElemento.textContent = mensaje;
+
+    alertContent.appendChild(icono);
+    alertContent.appendChild(mensajeElemento);
+
+    $('#alertModal').modal('show');
+}
 
         document.querySelector('.card-imprimir-reporte').addEventListener('click', async function () {
     try {

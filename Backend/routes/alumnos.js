@@ -132,7 +132,7 @@ router.delete('/:id', authMiddleware, getAlumno, async (req, res) => {
     try {
         req.profesor.alumnos = req.profesor.alumnos.filter(alumnoId => alumnoId.toString() !== res.alumno._id.toString());
         await req.profesor.save();
-        await res.alumno.remove();
+        await res.alumno.deleteOne(); 
         res.json({ message: 'Alumno eliminado exitosamente' });
     } catch (err) {
         res.status(500).json({ message: err.message });
